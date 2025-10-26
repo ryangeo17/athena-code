@@ -1,0 +1,69 @@
+import os
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch import conditions
+from launch.actions import DeclareLaunchArgument, GroupAction
+from launch.substitutions import LaunchConfiguration, Command
+from launch_ros.actions import Node, PushRosNamespace
+from launch_ros.parameter_descriptions import ParameterValue
+
+ARGUMENTS = [
+    DeclareLaunchArgument('rviz', default_value='false',
+                          choices=['true', 'false'],
+                          description='Start rviz.'),
+    DeclareLaunchArgument('use_sim_time', default_value='true',
+                          choices=['true', 'false'],
+                          description='use_sim_time'),
+    DeclareLaunchArgument('namespace', default_value='',
+                          description='Robot namespace'),
+]
+
+def generate_launch_description():
+    pkg_share = get_package_share_directory('description')
+    
+    urdf_file = os.path.join(pkg_share, 'urdf', 'UMDLoop_Rover2025_URDF.urdf')
+    
+    namespace = LaunchConfiguration('namespace')
+    robot_name = 'rover'
+
+    spawn_robot_group_action = GroupAction([
+        PushRosNamespace(namespace),
+        
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            output='screen',
+            parameters=[{
+                'robot_description': ParameterValue(
+                    Command(['xacro ', urdf_file]),
+                    value_type=str
+                ),
+                'use_sim_time': LaunchConfiguration('use_sim_time')
+            }]
+        ),
+
+        Node(
+            package='ros_gz_sim',
+            executable='create',
+            arguments=['-name', robot_name,
+                       '-x', '0.0',
+                       '-y', '0.0',
+                       '-z', '3.0',
+                       '-Y', '0.0',
+                       '-topic', 'robot_description'],
+            output='screen'
+        ),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            output='screen',
+            condition=conditions.IfCondition(LaunchConfiguration('rviz'))
+        ),
+    ])
+
+    ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(spawn_robot_group_action)
+    return ld

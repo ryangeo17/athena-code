@@ -1,0 +1,35 @@
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='imu_bridge',
+            output='screen',
+            arguments=[
+                '/imu@sensor_msgs/msg/Imu@gz.msgs.IMU',
+            ],
+        ),
+
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='gps_bridge',
+            output='screen',
+            arguments=[
+                '/gps/fix@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat',
+            ],
+        ),
+
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='clock_bridge',
+            output='screen',
+            arguments=[
+                '/clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock',
+            ]
+        ),
+    ])
