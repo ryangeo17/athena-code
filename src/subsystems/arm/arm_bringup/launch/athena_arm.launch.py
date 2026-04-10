@@ -109,6 +109,17 @@ def generate_launch_description():
             description="Robot controller to start.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "controller_profile",
+            default_value="ps4",
+            description=(
+                "Controller remapping profile for joy_remapper. "
+                "Available profiles are in the teleop package config/ directory. "
+                "Use 'ps4_jetson' when running on the rover."
+            ),
+        )
+    )
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
 
@@ -126,6 +137,7 @@ def launch_setup(context, *args, **kwargs):
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     mock_sensor_commands = LaunchConfiguration("mock_sensor_commands")
     robot_controller = LaunchConfiguration("robot_controller")
+    controller_profile = LaunchConfiguration("controller_profile")
 
     robot_description_path = PathJoinSubstitution(
         [FindPackageShare("description"), "urdf", "athena_arm.urdf.xacro"]
@@ -139,10 +151,6 @@ def launch_setup(context, *args, **kwargs):
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare(description_package), "rviz", rviz_file]
     )
-    joystick_config_file = PathJoinSubstitution(
-        [FindPackageShare(runtime_config_package), 'config', 'joystick.yaml']
-    )
-
     robot_semantic_path = PathJoinSubstitution(
         [FindPackageShare("arm_moveit"), "srdf", "athena_arm.srdf"]
     )
@@ -188,12 +196,20 @@ def launch_setup(context, *args, **kwargs):
         .to_moveit_configs()
     )
 
-    joystick_publisher = Node(
-        package='teleop',
-        executable='joystick',
-        name='joystick',
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        name='joy_node',
         output='screen',
-        parameters=[joystick_config_file],
+        parameters=[{'deadzone': 0.0}],
+    )
+
+    joy_remapper_node = Node(
+        package='teleop',
+        executable='joy_remapper',
+        name='joy_remapper',
+        output='screen',
+        parameters=[{'controller_profile': controller_profile}],
     )
 
     control_node = Node(
@@ -345,7 +361,8 @@ def launch_setup(context, *args, **kwargs):
       + delay_inactive_robot_controller_spawners_after_joint_state_broadcaster_spawner
 
     base_station_actions = [
-        joystick_publisher,
+        joy_node,
+        joy_remapper_node,
     ]
 
     if mode == "jetson":

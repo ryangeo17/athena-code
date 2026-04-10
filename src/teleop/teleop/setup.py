@@ -10,6 +10,10 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/config', [
+            'teleop/config/ps4.yaml',
+            'teleop/config/ps4_jetson.yaml',
+        ]),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,7 +24,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'joystick = teleop.joystick_publisher:main'
+            'joystick = teleop.joystick_publisher:main',
+            'joy_remapper = teleop.joy_remapper:main',
         ],
     },
 )

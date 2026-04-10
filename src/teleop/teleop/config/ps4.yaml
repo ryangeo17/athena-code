@@ -1,0 +1,34 @@
+# PS4 controller profile — desktop / base station
+#
+# joy_node axis indices (Linux, DS4 via USB or bluetooth):
+#   0: left stick L/R       (+1 = left,  -1 = right)
+#   1: left stick U/D       (+1 = up,    -1 = down)   <- inverted on desktop
+#   2: L2 trigger           (-1 = released, +1 = fully pressed)
+#   3: right stick L/R      (+1 = left,  -1 = right)
+#   4: right stick U/D      (+1 = up,    -1 = down)   <- inverted on desktop
+#   5: R2 trigger           (-1 = released, +1 = fully pressed)
+#
+# Output axes written to controller_input Joy message:
+#   [0] left stick L/R
+#   [1] left stick U/D
+#   [2] right stick L/R
+#   [3] right stick U/D
+#   [4] L2 trigger (remapped 0..1)
+#   [5] R2 trigger (remapped 0..1)
+
+deadband: 0.08
+
+# Each entry maps one output axis.
+# src:     source index in the raw /joy axes array
+# invert:  negate the value after deadband
+# trigger: remap [-1, 1] -> [0, 1]  (use for L2/R2)
+axes:
+  - { src: 0, invert: false, trigger: false }  # [0] left stick L/R
+  - { src: 1, invert: true,  trigger: false }  # [1] left stick U/D  (inverted on desktop)
+  - { src: 3, invert: false, trigger: false }  # [2] right stick L/R
+  - { src: 4, invert: true,  trigger: false }  # [3] right stick U/D (inverted on desktop)
+  - { src: 2, invert: false, trigger: true  }  # [4] L2 trigger
+  - { src: 5, invert: false, trigger: true  }  # [5] R2 trigger
+
+# How many raw buttons to pass through unchanged (PS4 has 13 used by the controllers)
+button_count: 13
