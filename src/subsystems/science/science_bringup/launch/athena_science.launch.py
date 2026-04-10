@@ -94,6 +94,17 @@ def generate_launch_description():
             description="Robot controller to start.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "controller_profile",
+            default_value="ps4",
+            description=(
+                "Controller remapping profile for joy_remapper. "
+                "Available profiles live in the teleop package config/ directory. "
+                "Use 'ps4' on the desktop (default) or 'ps4_jetson' on the rover."
+            ),
+        )
+    )
 
     # Initialize Arguments
     runtime_config_package = LaunchConfiguration("runtime_config_package")
@@ -104,6 +115,7 @@ def generate_launch_description():
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     mock_sensor_commands = LaunchConfiguration("mock_sensor_commands")
     robot_controller = LaunchConfiguration("robot_controller")
+    controller_profile = LaunchConfiguration("controller_profile")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -135,20 +147,23 @@ def generate_launch_description():
         [FindPackageShare(description_package), "rviz", "athena_science.rviz"]
     )
 
-    joystick_config_file = PathJoinSubstitution(
-        [FindPackageShare(runtime_config_package), 'config', 'joystick.yaml']
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        name='joy_node',
+        output='screen',
     )
 
-    joystick_publisher = Node(
+    joy_remapper_node = Node(
         package='teleop',
-        executable='joystick',
-        name='joystick',
+        executable='joy_remapper',
+        name='joy_remapper',
         output='screen',
-        parameters = [joystick_config_file],
+        parameters=[{'controller_profile': controller_profile}],
         remappings=[
-        ('controller_input', 'science_manual'),
-        ('/controller_input', '/science_manual'),
-    ],
+            ('controller_input', 'science_manual'),
+            ('/controller_input', '/science_manual'),
+        ],
     )
 
     control_node = Node(
@@ -335,7 +350,8 @@ def generate_launch_description():
             delay_motor_status_broadcaster_after_joint_state_broadcaster,
             # umdloop_can_node,
             controller_switcher_node,
-            joystick_publisher,
+            joy_node,
+            joy_remapper_node,
         ]
         + delay_robot_controller_spawners_after_joint_state_broadcaster_spawner
         + delay_inactive_robot_controller_spawners_after_joint_state_broadcaster_spawner

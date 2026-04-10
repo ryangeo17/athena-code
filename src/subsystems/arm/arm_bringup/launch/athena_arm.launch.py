@@ -201,7 +201,6 @@ def launch_setup(context, *args, **kwargs):
         executable='joy_node',
         name='joy_node',
         output='screen',
-        parameters=[{'deadzone': 0.0}],
     )
 
     joy_remapper_node = Node(

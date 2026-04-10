@@ -11,8 +11,9 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/config', [
-            'teleop/config/ps4.yaml',
-            'teleop/config/ps4_jetson.yaml',
+            'config/ps4.yaml',
+            'config/ps4_jetson.yaml',
+            'config/thrustmaster.yaml',
         ]),
     ],
     install_requires=['setuptools'],

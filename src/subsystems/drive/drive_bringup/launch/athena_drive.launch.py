@@ -53,6 +53,18 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            "controller_profile",
+            default_value="thrustmaster",
+            description=(
+                "Controller remapping profile for joy_remapper. "
+                "Available profiles live in the teleop package config/ directory. "
+                "Use 'thrustmaster' for the T.16000M (default), "
+                "'ps4' for a DS4 on the desktop, or 'ps4_jetson' on the rover."
+            ),
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             "controllers_file",
             default_value="athena_drive_controllers.yaml",
             description="YAML file with the controllers configuration.",
@@ -130,6 +142,7 @@ def launch_setup(context, *args, **kwargs):
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     mock_sensor_commands = LaunchConfiguration("mock_sensor_commands")
     robot_controller = LaunchConfiguration("robot_controller")
+    controller_profile = LaunchConfiguration("controller_profile")
 
     robot_description_path = PathJoinSubstitution(
         [FindPackageShare(description_package), "urdf", description_file]
@@ -167,16 +180,19 @@ def launch_setup(context, *args, **kwargs):
 
     robot_description = {"robot_description": robot_description_content}
 
-    joystick_publisher = Node(
-        package='teleop',
-        executable='joystick',
-        name='joystick',
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        name='joy_node',
         output='screen',
-        parameters=[joystick_config],
-        remappings=[
-            ('controller_input', 'joy'),
-            ('/controller_input', '/joy'),
-        ],
+    )
+
+    joy_remapper_node = Node(
+        package='teleop',
+        executable='joy_remapper',
+        name='joy_remapper',
+        output='screen',
+        parameters=[{'controller_profile': controller_profile}],
     )
 
     teleop_twist_joy = Node(
@@ -187,6 +203,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[teleop_twist_config],
         remappings=[
             ('/cmd_vel', '/rear_ackermann_controller/reference'),
+            ('/joy', '/controller_input'),
         ],
     )
 
@@ -361,7 +378,8 @@ def launch_setup(context, *args, **kwargs):
       + delay_gpio_controller_spawners_after_joint_state_broadcaster_spawner
 
     base_station_actions = [
-        joystick_publisher,
+        joy_node,
+        joy_remapper_node,
         teleop_twist_joy,
     ]
 
