@@ -112,11 +112,12 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "controller_profile",
-            default_value="ps4",
+            default_value="thrustmaster",
             description=(
                 "Controller remapping profile for joy_remapper. "
                 "Available profiles are in the teleop package config/ directory. "
-                "Use 'ps4_jetson' when running on the rover."
+                "Use 'thrustmaster' for the T.16000M (default), "
+                "'ps4' for a DS4 on the desktop, or 'ps4_jetson' on the rover."
             ),
         )
     )

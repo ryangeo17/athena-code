@@ -14,6 +14,7 @@ setup(
             'config/ps4.yaml',
             'config/ps4_jetson.yaml',
             'config/thrustmaster.yaml',
+            'config/xbox.yaml',
         ]),
     ],
     install_requires=['setuptools'],

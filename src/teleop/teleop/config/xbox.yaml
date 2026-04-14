@@ -1,0 +1,40 @@
+# Xbox controller profile
+#
+# TODO: Verify raw joy_node axis indices by running:
+#   ros2 topic echo /joy
+# with an Xbox controller connected, then fill in the mappings below.
+#
+# Expected joy_node axis indices (Linux, Xbox via USB or bluetooth):
+#   0: left stick L/R       (TODO: confirm polarity)
+#   1: left stick U/D       (TODO: confirm polarity)
+#   2: LT trigger           (TODO: confirm index and range)
+#   3: right stick L/R      (TODO: confirm polarity)
+#   4: right stick U/D      (TODO: confirm polarity)
+#   5: RT trigger           (TODO: confirm index and range)
+#
+# Output axes written to controller_input Joy message:
+#   [0] left stick L/R
+#   [1] left stick U/D
+#   [2] right stick L/R
+#   [3] right stick U/D
+#   [4] LT trigger (remapped 0..1)
+#   [5] RT trigger (remapped 0..1)
+
+deadband: 0.08
+
+# Each entry maps one output axis.
+# src:     source index in the raw /joy axes array
+# invert:  negate the value after deadband
+# trigger: remap [-1, 1] -> [0, 1]  (use for LT/RT)
+#
+# TODO: Update src, invert, and trigger values once raw axis indices are confirmed.
+axes:
+  - { src: 0, invert: false, trigger: false }  # [0] left stick L/R   (TODO: confirm)
+  - { src: 1, invert: false, trigger: false }  # [1] left stick U/D   (TODO: confirm invert)
+  - { src: 3, invert: false, trigger: false }  # [2] right stick L/R  (TODO: confirm)
+  - { src: 4, invert: false, trigger: false }  # [3] right stick U/D  (TODO: confirm invert)
+  - { src: 2, invert: false, trigger: true  }  # [4] LT trigger       (TODO: confirm index)
+  - { src: 5, invert: false, trigger: true  }  # [5] RT trigger       (TODO: confirm index)
+
+# TODO: Confirm button count for the Xbox controller
+button_count: 11
