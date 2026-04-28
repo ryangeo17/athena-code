@@ -1,19 +1,19 @@
 teleop_twist_joy:
   ros__parameters:
-    enable_button: 0
-    
-    axis_linear.x: 1        # up/down
-    axis_linear.y: 2        # left/right
-    axis_linear.z: -1
+    enable_button: 0          # Thrustmaster: [button 0] trigger
+
+    axis_linear.x: 1          # Thrustmaster: [slot 1] joystick_x (forward/back)
+    axis_linear.y: 2          # Thrustmaster: [slot 2] joystick_y (strafe, unused)
+    axis_linear.z: -1         # unused
 
     # unsure why but ackermann controller only goes about half this speed
     scale_linear.x: 0.59
     scale_linear.y: 0.0
     scale_linear.z: 0.0
 
-    axis_angular.yaw: 0        # rotate
-    axis_angular.pitch: -1
-    axis_angular.roll: -1
+    axis_angular.yaw: 0       # Thrustmaster: [slot 0] joystick_twist (rotate)
+    axis_angular.pitch: -1    # unused
+    axis_angular.roll: -1     # unused
 
     # ackermann controller turns to at max scale_angular.yaw*pi. Seems to ignore how much you input, relies on how fast rover is going
     scale_angular.yaw: -0.7

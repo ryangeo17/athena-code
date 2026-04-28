@@ -30,7 +30,7 @@ endforeach()
 # Add science_manual library related compile commands
 generate_parameter_library(
   science_manual_parameters
-  src/science_controller.yaml
+  config/science_controller.yaml
   include/science_controllers/validate_science_controller_parameters.hpp
 )
 

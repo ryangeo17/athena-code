@@ -82,3 +82,14 @@ manual_arm_joint_by_joint_controller:
     description: "Virtual four-bar ratio applied as elbow_motor_velocity += ratio * shoulder_motor_velocity.",
     read_only: true,
   }
+  # Controller: Airbus TCA Sidestick
+  # Buttons: [1] center button  [3] red button  [4] left 1 (gripper open)  [5] left 2 (gripper close)
+  # Axes:    [0] joystick_y  [1] joystick_x  [3] throttle_level  ([2][4][5] unused)
+  controls:
+    modifier_button:      { type: int, default_value: 1, description: "Button index for wrist mode modifier toggle.", read_only: true }  # Airbus: [button 1] center button
+    actuator_button:      { type: int, default_value: 3, description: "Button index for actuator trigger.", read_only: true }             # Airbus: [button 3] red button
+    gripper_open_button:  { type: int, default_value: 4, description: "Button index for gripper open.", read_only: true }                # Airbus: [button 4] left 1
+    gripper_close_button: { type: int, default_value: 5, description: "Button index for gripper close.", read_only: true }               # Airbus: [button 5] left 2
+    base_yaw_axis:        { type: int, default_value: 0, description: "Axis index for base yaw.", read_only: true }                      # Airbus: [axis 0] joystick_y
+    shoulder_pitch_axis:  { type: int, default_value: 1, description: "Axis index for shoulder pitch.", read_only: true }                # Airbus: [axis 1] joystick_x
+    elbow_pitch_axis:     { type: int, default_value: 3, description: "Axis index for elbow pitch.", read_only: true }                   # Airbus: [axis 3] throttle_level

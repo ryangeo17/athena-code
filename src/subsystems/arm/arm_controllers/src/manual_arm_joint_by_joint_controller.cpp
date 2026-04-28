@@ -210,41 +210,37 @@ controller_interface::return_type ManualArmJointByJointController::update(
 {
   auto current_ref = input_ref_.readFromRT();
 
-  if (!std::isnan((*current_ref)->axes[0]))
+  if (!std::isnan((*current_ref)->axes[params_.controls.base_yaw_axis]))
   {
     // Base Yaw: L/R Left Stick
-    joint_velocities_[0] = ((*current_ref)->buttons[1] == 1) ? 0.0 : (*current_ref)->axes[0] * max_velocities_[0];
+    joint_velocities_[0] = ((*current_ref)->buttons[params_.controls.modifier_button] == 1) ? 0.0 : (*current_ref)->axes[params_.controls.base_yaw_axis] * max_velocities_[0];
 
     // Shoulder Pitch: U/D Left Stick
-    joint_velocities_[1] = ((*current_ref)->buttons[1] == 1) ? 0.0 : -(*current_ref)->axes[1] * max_velocities_[1];
-    
-    // Elbow Pitch: U/D Right Stick
-    joint_velocities_[2] = (*current_ref)->axes[3] * max_velocities_[2];  
+    joint_velocities_[1] = ((*current_ref)->buttons[params_.controls.modifier_button] == 1) ? 0.0 : -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[1];
 
-    // Wrist Pitch: U/D on Left Joystick AND O button 
-    joint_velocities_[3] = -(*current_ref)->axes[1] * static_cast<float>((*current_ref)->buttons[1]) * max_velocities_[3];
-    
+    // Elbow Pitch: U/D Right Stick
+    joint_velocities_[2] = (*current_ref)->axes[params_.controls.elbow_pitch_axis] * max_velocities_[2];
+
+    // Wrist Pitch: U/D on Left Joystick AND O button
+    joint_velocities_[3] = -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[3];
+
     // Wrist Roll: L/R on Left Joystick AND O button
-    joint_velocities_[4] = -(*current_ref)->axes[0] * static_cast<float>((*current_ref)->buttons[1]) * max_velocities_[4];
+    joint_velocities_[4] = -(*current_ref)->axes[params_.controls.base_yaw_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[4];
 
     // Gripper Claw: Bumpers and Triggers
-    if ((*current_ref)->buttons[4] && (*current_ref)->buttons[5]) {
+    if ((*current_ref)->buttons[params_.controls.gripper_open_button] && (*current_ref)->buttons[params_.controls.gripper_close_button]) {
     // closeClaw(motor);
-    } else if ((*current_ref)->buttons[4]) { // Left bumper
+    } else if ((*current_ref)->buttons[params_.controls.gripper_open_button]) { // Left bumper
       joint_velocities_[5] = max_velocities_[5]; // open claw
-    } else if ((*current_ref)->buttons[5]) { // Right bumper
+    } else if ((*current_ref)->buttons[params_.controls.gripper_close_button]) { // Right bumper
       joint_velocities_[5] = -max_velocities_[5]; // close claw
-    } else if ((*current_ref)->axes[4]) { // Left Trigger
-      joint_velocities_[5] = (*current_ref)->axes[4] * max_velocities_[5]; // open claw
-    } else if ((*current_ref)->axes[5]) { // Right Trigger
-      joint_velocities_[5] = -(*current_ref)->axes[5] * max_velocities_[5]; // close claw
     } else{
       joint_velocities_[5] = 0.0;
     }
 
     // Actuator (EXPERIMENTAL)
     // Pressing square activates actuator movement
-    if((*current_ref)->buttons[3] == 1 && actuator_active_ == false){
+    if((*current_ref)->buttons[params_.controls.actuator_button] == 1 && actuator_active_ == false){
       actuator_active_ = true;
       actuator_iterator = 0.001;
     }

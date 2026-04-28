@@ -53,7 +53,7 @@
         # [2]  right_stick_lr   → unused
         # [3]  right_stick_ud   → sampler lift
         # [4]  left_trigger     → auger spin (reverse via buttons[4])
-        # [5]  right_trigger    → scoop (reverse via buttons[5])
+        # [5]  right_trigger    → scoop spin(reverse via buttons[5])
 
         # A(buttons[0]) = servo scoop B (toggle)
         # B(buttons[1]) = rack & pinion lift (toggle between two hardcoded positions)

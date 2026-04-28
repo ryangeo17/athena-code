@@ -183,3 +183,63 @@ science_manual:
     default_value: [5.0, 360.0]
     validation:
       fixed_size<>: 2
+
+  # Controller: Xbox
+  # Buttons: [0] A  [1] B  [2] X  [3] Y  [4] LB  [5] RB
+  # Axes:    [0] left_stick_lr  [1] left_stick_ud  [2] right_stick_lr  [3] right_stick_ud  [4] left_trigger  [5] right_trigger
+  controls:
+    pump_button:          # Xbox: [button 2] X
+      type: int
+      default_value: 2
+      description: "Button index for pump toggle."
+      read_only: true
+    lift_button:          # Xbox: [button 1] B
+      type: int
+      default_value: 1
+      description: "Button index for lift toggle."
+      read_only: true
+    servo_scoop_a_button: # Xbox: [button 3] Y
+      type: int
+      default_value: 3
+      description: "Button index for scoop servo A toggle."
+      read_only: true
+    servo_scoop_b_button: # Xbox: [button 0] A
+      type: int
+      default_value: 0
+      description: "Button index for scoop servo B toggle."
+      read_only: true
+    scoop_reverse_button: # Xbox: [button 5] RB
+      type: int
+      default_value: 5
+      description: "Button index for scoop direction reverse."
+      read_only: true
+    auger_reverse_button: # Xbox: [button 4] LB
+      type: int
+      default_value: 4
+      description: "Button index for auger direction reverse."
+      read_only: true
+    auger_lift_axis:      # Xbox: [axis 0] left_stick_lr
+      type: int
+      default_value: 0
+      description: "Axis index for auger lift position."
+      read_only: true
+    lift_axis:            # Xbox: [axis 1] left_stick_ud
+      type: int
+      default_value: 1
+      description: "Axis index for lift control."
+      read_only: true
+    sampler_lift_axis:    # Xbox: [axis 3] right_stick_ud
+      type: int
+      default_value: 3
+      description: "Axis index for sampler lift."
+      read_only: true
+    auger_axis:           # Xbox: [axis 4] left_trigger
+      type: int
+      default_value: 4
+      description: "Axis index for auger spinner."
+      read_only: true
+    scoop_axis:           # Xbox: [axis 5] right_trigger
+      type: int
+      default_value: 5
+      description: "Axis index for scoop spinner."
+      read_only: true

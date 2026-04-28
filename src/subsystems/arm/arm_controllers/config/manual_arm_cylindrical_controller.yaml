@@ -66,3 +66,14 @@ manual_arm_cylindrical_controller:
       not_empty<>: null,
     }
   }
+  # Controller: Airbus TCA Sidestick
+  # Buttons: [1] center button  [4] left 1  [5] left 2
+  # Axes:    [0] joystick_y  [1] joystick_x  [2] joystick_twist  [3] throttle_level
+  controls:
+    thetadot_modifier_button: { type: int, default_value: 1, description: "Button index for thetadot modifier.", read_only: true }  # Airbus: [button 1] center button
+    open_claw_button:         { type: int, default_value: 4, description: "Button index for open claw.", read_only: true }          # Airbus: [button 4] left 1
+    close_claw_button:        { type: int, default_value: 5, description: "Button index for close claw.", read_only: true }         # Airbus: [button 5] left 2
+    yaw_axis:                 { type: int, default_value: 2, description: "Axis index for yaw input.", read_only: true }            # Airbus: [axis 2] joystick_twist
+    vy_axis:                  { type: int, default_value: 1, description: "Axis index for vy (reach in/out).", read_only: true }    # Airbus: [axis 1] joystick_x
+    vz_axis:                  { type: int, default_value: 3, description: "Axis index for vz / height.", read_only: true }          # Airbus: [axis 3] throttle_level
+    wrist_roll_axis:          { type: int, default_value: 0, description: "Axis index for wrist roll.", read_only: true }           # Airbus: [axis 0] joystick_y

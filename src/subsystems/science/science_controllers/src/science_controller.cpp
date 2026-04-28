@@ -271,7 +271,7 @@ controller_interface::return_type ScienceManual::update(
 
   // -- Pumps --
   // Stepper motors command (velocity-like value, but we feed as position target here)
-  bool pump_button = (msg->buttons.size() > 2 && msg->buttons[2]);
+  bool pump_button = (msg->buttons.size() > static_cast<size_t>(params_.controls.pump_button) && msg->buttons[params_.controls.pump_button]);
   if (pump_button && !prev_pump_button_) {
       pump_toggle = !pump_toggle;
   }
@@ -283,8 +283,8 @@ controller_interface::return_type ScienceManual::update(
   // Rack & pinion
   // Use stage-dependent "speed" for rack & pinion motion (reuse stepper limits)
   double rack_speed = params_.velocity_limits_lift[stage_idx];
-  double axis_left = (msg->axes.size() > 1) ? msg->axes[1] : 0.0;
-  double axis_right = (msg->axes.size() > 1) ? msg->axes[3] : 0.0;
+  double axis_left = (msg->axes.size() > static_cast<size_t>(params_.controls.lift_axis)) ? msg->axes[params_.controls.lift_axis] : 0.0;
+  double axis_right = (msg->axes.size() > static_cast<size_t>(params_.controls.sampler_lift_axis)) ? msg->axes[params_.controls.sampler_lift_axis] : 0.0;
 
   // Integrate axes into positions (position += axis * speed * dt)
 
@@ -294,7 +294,7 @@ controller_interface::return_type ScienceManual::update(
   // rack_right_position -= axis_right * rack_speed * right_gain * dt;
 
   // ** TEMPORARY FOR SAR 
-  bool lift_button = (msg->buttons.size() > 1 && msg->buttons[1]);
+  bool lift_button = (msg->buttons.size() > static_cast<size_t>(params_.controls.lift_button) && msg->buttons[params_.controls.lift_button]);
   if (lift_button && !prev_lift_button) {
     lift_toggle = !lift_toggle;
   }
@@ -307,13 +307,13 @@ controller_interface::return_type ScienceManual::update(
 
   // -- Scoops --
   // Scoop Spinner (Right Trigger for Vel, Right Bumper for direction)
-  double scoop_axis = (msg->axes.size() > 5) ? msg->axes[5] : 0.0;
-  bool scoop_reverse = (msg->buttons.size() > 5 && msg->buttons[5]);
+  double scoop_axis = (msg->axes.size() > static_cast<size_t>(params_.controls.scoop_axis)) ? msg->axes[params_.controls.scoop_axis] : 0.0;
+  bool scoop_reverse = (msg->buttons.size() > static_cast<size_t>(params_.controls.scoop_reverse_button) && msg->buttons[params_.controls.scoop_reverse_button]);
   double scoop_spinner_cmd = scoop_axis * params_.velocity_limits_scoop_spinner[stage_idx] * (scoop_reverse ? -1.0 : 1.0);
 
   // Scoop Servo
   // Servo A is square
-  bool servo_scoop_a_button = (msg->buttons.size() > 1 && msg->buttons[3]);
+  bool servo_scoop_a_button = (msg->buttons.size() > static_cast<size_t>(params_.controls.servo_scoop_a_button) && msg->buttons[params_.controls.servo_scoop_a_button]);
   if (servo_scoop_a_button && !prev_servo_scoop_a_button_) {
     servo_scoop_a_toggle = !servo_scoop_a_toggle;
   }
@@ -321,7 +321,7 @@ controller_interface::return_type ScienceManual::update(
   scoop_servo_a_position = servo_scoop_a_toggle * params_.position_range_scoop_servo[1];
 
   // Servo B is X
-  bool servo_scoop_b_button = (msg->buttons.size() > 0 && msg->buttons[0]);
+  bool servo_scoop_b_button = (msg->buttons.size() > static_cast<size_t>(params_.controls.servo_scoop_b_button) && msg->buttons[params_.controls.servo_scoop_b_button]);
   if (servo_scoop_b_button && !prev_servo_scoop_b_button_) {
     servo_scoop_b_toggle = !servo_scoop_b_toggle;
   }
@@ -331,13 +331,13 @@ controller_interface::return_type ScienceManual::update(
   // -- Sampler --
   // Sampler Lift
   double sampler_lift_speed = params_.velocity_limits_sampler_lift[stage_idx];
-  double axis_sampler_lift = (msg->axes.size() > 3) ? msg->axes[3] : 0.0;
+  double axis_sampler_lift = (msg->axes.size() > static_cast<size_t>(params_.controls.sampler_lift_axis)) ? msg->axes[params_.controls.sampler_lift_axis] : 0.0;
   sampler_lift_pos_l += sampler_lift_speed * axis_sampler_lift * dt;
   sampler_lift_pos_r -= sampler_lift_speed * axis_sampler_lift * dt;
 
   // Auger (Left Trigger for Vel, Left Bumper for direction)
-  double auger_axis = (msg->axes.size() > 4) ? msg->axes[4] : 0.0;
-  bool auger_reverse = (msg->buttons.size() > 4 && msg->buttons[4]);
+  double auger_axis = (msg->axes.size() > static_cast<size_t>(params_.controls.auger_axis)) ? msg->axes[params_.controls.auger_axis] : 0.0;
+  bool auger_reverse = (msg->buttons.size() > static_cast<size_t>(params_.controls.auger_reverse_button) && msg->buttons[params_.controls.auger_reverse_button]);
   double auger_spinner_cmd = auger_axis * params_.velocity_limits_auger[stage_idx] * (auger_reverse ? -1.0 : 1.0);
 
   // Auger_lift
@@ -347,7 +347,7 @@ controller_interface::return_type ScienceManual::update(
   // }
   // prev_auger_lift_button_ = auger_lift_button;
   // auger_lift_position = auger_lift_toggle ? params_.position_range_auger_lift[1] : params_.position_range_auger_lift[0];
-  double auger_lift_axis = (msg->axes.size() > 0) ? msg->axes[0] : 0.0;
+  double auger_lift_axis = (msg->axes.size() > static_cast<size_t>(params_.controls.auger_lift_axis)) ? msg->axes[params_.controls.auger_lift_axis] : 0.0;
 
   // Use absolute value so direction doesn't matter
   double axis_mag = std::abs(auger_lift_axis);
