@@ -212,14 +212,21 @@ controller_interface::return_type ManualArmJointByJointController::update(
 
   if (!std::isnan((*current_ref)->axes[params_.controls.base_yaw_axis]))
   {
-    // Base Yaw: L/R Left Stick
-    joint_velocities_[0] = ((*current_ref)->buttons[params_.controls.modifier_button] == 1) ? 0.0 : (*current_ref)->axes[params_.controls.base_yaw_axis] * max_velocities_[0];
+    bool wrist_mode = ((*current_ref)->buttons[params_.controls.modifier_button] == 1);
+    bool elbow_mode = ((*current_ref)->buttons[params_.controls.elbow_modifier_button] == 1);
 
-    // Shoulder Pitch: U/D Left Stick
-    joint_velocities_[1] = ((*current_ref)->buttons[params_.controls.modifier_button] == 1) ? 0.0 : -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[1];
+    // Base Yaw: L/R Left Stick (disabled in wrist or elbow mode)
+    joint_velocities_[0] = (wrist_mode || elbow_mode) ? 0.0
+        : (*current_ref)->axes[params_.controls.base_yaw_axis] * max_velocities_[0];
 
-    // Elbow Pitch: U/D Right Stick
-    joint_velocities_[2] = (*current_ref)->axes[params_.controls.elbow_pitch_axis] * max_velocities_[2];
+    // Shoulder Pitch: U/D Left Stick (disabled in wrist or elbow mode)
+    joint_velocities_[1] = (wrist_mode || elbow_mode) ? 0.0
+        : -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[1];
+
+    // Elbow Pitch: U/D Left Stick when elbow modifier held
+    joint_velocities_[2] = elbow_mode
+        ? (*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[2]
+        : 0.0;
 
     // Wrist Pitch: U/D on Left Joystick AND O button
     joint_velocities_[3] = -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[3];

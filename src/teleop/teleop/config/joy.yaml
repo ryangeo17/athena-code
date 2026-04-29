@@ -30,18 +30,19 @@
       arm:
         # Controller: Airbus TCA Sidestick (joystick_type: airbus)
 
-        # Slot → axis name → Joint-by-Joint use               | Cylindrical use
-        # [0]  joystick_y     → base yaw / wrist roll*        | unused
-        # [1]  joystick_x     → shoulder pitch / wrist pitch* | vy (reach in/out) / theta-dot*
-        # [2]  joystick_twist → unused                        | yaw (rotate base)
-        # [3]  throttle_level → elbow pitch                   | vz (height)
+        # Slot → axis name → Joint-by-Joint use                          | Cylindrical use
+        # [0]  joystick_y     → base yaw (default) / wrist roll (wrist*) | unused
+        # [1]  joystick_x     → shoulder (default) / wrist pitch (wrist*) / elbow (elbow**) | vy / theta-dot*
+        # [2]  joystick_twist → unused                                    | yaw (rotate base)
+        # [3]  throttle_level → unused (joint-by-joint)                   | vz (height)
         # [4]  hat_switch_y   → unused (dead slot)
-        # [5]  hat_switch_x   → unusued (dead slot)
+        # [5]  hat_switch_x   → unused (dead slot)
 
-        # center button(buttons[1]) = *modifier
-        # red button(buttons[3]) = actuator trigger
-        # left 1 (buttons[4]) = gripper open
-        #left 2 (buttons[5]) = gripper close
+        # buttons[1] = *wrist modifier  → axes[0]=wrist roll, axes[1]=wrist pitch
+        # buttons[2] = **elbow modifier → axes[1]=elbow pitch
+        # buttons[3] = red button       → actuator trigger
+        # buttons[4] = left 1           → gripper open
+        # buttons[5] = left 2           → gripper close
         output_slots: [joystick_y, joystick_x, joystick_twist, throttle_level, hat_switch_y, hat_switch_x]
       
       science:

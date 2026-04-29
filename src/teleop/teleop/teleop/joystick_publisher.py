@@ -67,7 +67,7 @@ class JoystickPublisher(Node):
         self.button_data = None
         self.hat_data = None
         self.activation = 0.08
-        JOYSTICK_NAMES = {s
+        JOYSTICK_NAMES = {
             "thrustmaster": "thrustmaster t.16000m",
             "xbox": "xbox 360 controller",
             "airbus": "thrustmaster t.a320 copilot"
