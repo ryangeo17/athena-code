@@ -88,7 +88,7 @@ manual_arm_joint_by_joint_controller:
   # Modes:   default=base yaw+shoulder  wrist(buttons[1])=wrist roll+pitch  elbow(buttons[2])=elbow pitch
   controls:
     modifier_button:       { type: int, default_value: 1, description: "Button index for wrist mode modifier.", read_only: true }             # Airbus: [button 1] center button
-    elbow_modifier_button: { type: int, default_value: 2, description: "Button index for elbow mode modifier.", read_only: true }             # Airbus: [button 2]
+    elbow_modifier_button: { type: int, default_value: 0, description: "Button index for elbow mode modifier.", read_only: true }             # Airbus: [button 2]
     actuator_button:       { type: int, default_value: 3, description: "Button index for actuator trigger.", read_only: true }                # Airbus: [button 3] red button
     gripper_open_button:   { type: int, default_value: 4, description: "Button index for gripper open.", read_only: true }                   # Airbus: [button 4] left 1
     gripper_close_button:  { type: int, default_value: 5, description: "Button index for gripper close.", read_only: true }                  # Airbus: [button 5] left 2
