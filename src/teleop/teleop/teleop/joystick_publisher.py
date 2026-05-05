@@ -68,11 +68,11 @@ class JoystickPublisher(Node):
         self.hat_data = None
         self.activation = 0.15
         JOYSTICK_NAMES = {
-            "thrustmaster": "thrustmaster t.16000m",
-            "xbox": "xbox 360 controller",
-            "airbus": "thrustmaster t.a320 copilot"
+            "thrustmaster": ["thrustmaster t.16000m"],
+            "xbox": ["xbox 360 controller", "xbox one s controller"],
+            "airbus": ["thrustmaster t.a320 copilot"]
         }
-        target_name = JOYSTICK_NAMES[self.joystick_type]
+        target_names = JOYSTICK_NAMES[self.joystick_type]
 
         self.joystick_index = None
 
@@ -85,7 +85,7 @@ class JoystickPublisher(Node):
         for i in range(joysticks):
             js = pygame.joystick.Joystick(i)
             name = js.get_name().lower()
-            if(name == target_name):
+            if name in target_names:
                 self.joystick_index = i
                 break
 
