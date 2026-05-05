@@ -214,26 +214,26 @@ controller_interface::return_type ManualArmJointByJointController::update(
   {
     bool wrist_mode = ((*current_ref)->buttons[params_.controls.modifier_button] == 1);
 
-    // Base Yaw: disabled in wrist mode only
+    // Base Yaw (left stick L/R): disabled in wrist mode
     joint_velocities_[0] = wrist_mode ? 0.0
         : (*current_ref)->axes[params_.controls.base_yaw_axis] * max_velocities_[0];
 
-    // Shoulder Pitch: disabled in wrist mode only
+    // Shoulder Pitch (left stick U/D): disabled in wrist mode
     joint_velocities_[1] = wrist_mode ? 0.0
         : -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[1];
 
-    // Elbow Pitch: right stick, always active, no modifier
+    // Elbow Pitch (right stick U/D): always active, no modifier needed
     joint_velocities_[2] = (*current_ref)->axes[params_.controls.elbow_pitch_axis] * max_velocities_[2];
 
-    // Wrist Pitch: U/D left stick when wrist modifier held
+    // Wrist Pitch (left stick U/D + B button): active in wrist mode
     joint_velocities_[3] = -(*current_ref)->axes[params_.controls.shoulder_pitch_axis]
         * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[3];
 
-    // Wrist Roll: L/R left stick when wrist modifier held
+    // Wrist Roll (left stick L/R + B button): active in wrist mode
     joint_velocities_[4] = -(*current_ref)->axes[params_.controls.base_yaw_axis]
         * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[4];
 
-    // Gripper: LB/RB bumpers (full speed) take priority; triggers (analog) as fallback
+    // Gripper: LB=open / RB=close (full speed); left trigger=open / right trigger=close (analog fallback)
     if ((*current_ref)->buttons[params_.controls.gripper_open_button] && (*current_ref)->buttons[params_.controls.gripper_close_button]) {
       // both held — do nothing
     } else if ((*current_ref)->buttons[params_.controls.gripper_open_button]) {
@@ -249,7 +249,7 @@ controller_interface::return_type ManualArmJointByJointController::update(
     }
 
     // Actuator (EXPERIMENTAL)
-    // Pressing square activates actuator movement
+    // Pressing X activates actuator movement
     if((*current_ref)->buttons[params_.controls.actuator_button] == 1 && actuator_active_ == false){
       actuator_active_ = true;
       actuator_iterator = 0.001;

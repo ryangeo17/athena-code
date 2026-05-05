@@ -244,11 +244,11 @@ controller_interface::return_type ManualArmCylindricalController::update(
   if (!std::isnan((*current_ref)->axes[params_.controls.wrist_roll_axis]))
   {
     //TODO: Get rid of the hardcoded rigamarole (translates to max vel of 1.5 inches/s)
-    command_velocities_[0] = (*current_ref)->axes[params_.controls.yaw_axis]*0.174533; // joystick_y -> yaw 10 dps
-    command_velocities_[1] = (*current_ref)->axes[params_.controls.vy_axis]*6*0.00635; // u/d left joystick -> vy
-    command_velocities_[2] = (*current_ref)->axes[params_.controls.vz_axis]*6*0.00635; // joystick_x -> vz
-    command_velocities_[3] = (*current_ref)->axes[params_.controls.vy_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.thetadot_modifier_button]);  // u/d left joystick & circle -> thetadot
-    command_velocities_[4] = 0.0; // (*current_ref)->axes[params_.controls.wrist_roll_axis]; // l/r left joystick -> wrist roll
+    command_velocities_[0] = (*current_ref)->axes[params_.controls.yaw_axis]*0.174533; // right stick L/R -> yaw 10 dps
+    command_velocities_[1] = (*current_ref)->axes[params_.controls.vy_axis]*6*0.00635; // left stick U/D -> vy
+    command_velocities_[2] = (*current_ref)->axes[params_.controls.vz_axis]*6*0.00635; // right stick U/D -> vz
+    command_velocities_[3] = (*current_ref)->axes[params_.controls.vy_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.thetadot_modifier_button]);  // left stick U/D & B button -> thetadot
+    command_velocities_[4] = 0.0; // (*current_ref)->axes[params_.controls.wrist_roll_axis]; // left stick L/R -> wrist roll (zeroed)
     command_velocities_[5] = (*current_ref)->axes[params_.controls.open_claw_axis];  // left trigger -> open claw
     command_velocities_[6] = (*current_ref)->axes[params_.controls.close_claw_axis]; // right trigger -> close claw
   }

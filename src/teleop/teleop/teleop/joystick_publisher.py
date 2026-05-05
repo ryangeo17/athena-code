@@ -66,7 +66,7 @@ class JoystickPublisher(Node):
         self.controller = None
         self.button_data = None
         self.hat_data = None
-        self.activation = 0.08
+        self.activation = 0.15
         JOYSTICK_NAMES = {
             "thrustmaster": "thrustmaster t.16000m",
             "xbox": "xbox 360 controller",
