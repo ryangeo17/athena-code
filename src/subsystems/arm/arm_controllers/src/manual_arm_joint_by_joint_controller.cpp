@@ -213,35 +213,38 @@ controller_interface::return_type ManualArmJointByJointController::update(
   if (!std::isnan((*current_ref)->axes[params_.controls.base_yaw_axis]))
   {
     bool wrist_mode = ((*current_ref)->buttons[params_.controls.modifier_button] == 1);
-    bool elbow_mode = ((*current_ref)->buttons[params_.controls.elbow_modifier_button] == 1);
 
-    // Base Yaw: L/R Left Stick (disabled in wrist or elbow mode)
-    joint_velocities_[0] = (wrist_mode || elbow_mode) ? 0.0
+    // Base Yaw: disabled in wrist mode only
+    joint_velocities_[0] = wrist_mode ? 0.0
         : (*current_ref)->axes[params_.controls.base_yaw_axis] * max_velocities_[0];
 
-    // Shoulder Pitch: U/D Left Stick (disabled in wrist or elbow mode)
-    joint_velocities_[1] = (wrist_mode || elbow_mode) ? 0.0
+    // Shoulder Pitch: disabled in wrist mode only
+    joint_velocities_[1] = wrist_mode ? 0.0
         : -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[1];
 
-    // Elbow Pitch: U/D Left Stick when elbow modifier held
-    joint_velocities_[2] = elbow_mode
-        ? (*current_ref)->axes[params_.controls.shoulder_pitch_axis] * max_velocities_[2]
-        : 0.0;
+    // Elbow Pitch: right stick, always active, no modifier
+    joint_velocities_[2] = (*current_ref)->axes[params_.controls.elbow_pitch_axis] * max_velocities_[2];
 
-    // Wrist Pitch: U/D on Left Joystick AND O button
-    joint_velocities_[3] = -(*current_ref)->axes[params_.controls.shoulder_pitch_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[3];
+    // Wrist Pitch: U/D left stick when wrist modifier held
+    joint_velocities_[3] = -(*current_ref)->axes[params_.controls.shoulder_pitch_axis]
+        * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[3];
 
-    // Wrist Roll: L/R on Left Joystick AND O button
-    joint_velocities_[4] = -(*current_ref)->axes[params_.controls.base_yaw_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[4];
+    // Wrist Roll: L/R left stick when wrist modifier held
+    joint_velocities_[4] = -(*current_ref)->axes[params_.controls.base_yaw_axis]
+        * static_cast<float>((*current_ref)->buttons[params_.controls.modifier_button]) * max_velocities_[4];
 
-    // Gripper Claw: Bumpers and Triggers
+    // Gripper: LB/RB bumpers (full speed) take priority; triggers (analog) as fallback
     if ((*current_ref)->buttons[params_.controls.gripper_open_button] && (*current_ref)->buttons[params_.controls.gripper_close_button]) {
-    // closeClaw(motor);
-    } else if ((*current_ref)->buttons[params_.controls.gripper_open_button]) { // Left bumper
-      joint_velocities_[5] = max_velocities_[5]; // open claw
-    } else if ((*current_ref)->buttons[params_.controls.gripper_close_button]) { // Right bumper
-      joint_velocities_[5] = -max_velocities_[5]; // close claw
-    } else{
+      // both held — do nothing
+    } else if ((*current_ref)->buttons[params_.controls.gripper_open_button]) {
+      joint_velocities_[5] = max_velocities_[5];
+    } else if ((*current_ref)->buttons[params_.controls.gripper_close_button]) {
+      joint_velocities_[5] = -max_velocities_[5];
+    } else if ((*current_ref)->axes[params_.controls.gripper_open_axis]) {
+      joint_velocities_[5] = (*current_ref)->axes[params_.controls.gripper_open_axis] * max_velocities_[5];
+    } else if ((*current_ref)->axes[params_.controls.gripper_close_axis]) {
+      joint_velocities_[5] = -(*current_ref)->axes[params_.controls.gripper_close_axis] * max_velocities_[5];
+    } else {
       joint_velocities_[5] = 0.0;
     }
 

@@ -60,7 +60,7 @@ manual_arm_joint_by_joint_controller:
   # }
   joystick_topic: {
     type: string,
-    default_value: "controller_input/airbus",
+    default_value: "controller_input/xbox",
     description: "Topic name for joystick input (sensor_msgs/Joy).",
     read_only: true,
     validation: {
@@ -82,15 +82,17 @@ manual_arm_joint_by_joint_controller:
     description: "Virtual four-bar ratio applied as elbow_motor_velocity += ratio * shoulder_motor_velocity.",
     read_only: true,
   }
-  # Controller: Airbus TCA Sidestick
-  # Buttons: [1] center button  [2] elbow modifier  [3] red button  [4] left 1 (gripper open)  [5] left 2 (gripper close)
-  # Axes:    [0] joystick_y  [1] joystick_x  ([2][3][4][5] unused)
-  # Modes:   default=base yaw+shoulder  wrist(buttons[1])=wrist roll+pitch  elbow(buttons[2])=elbow pitch
+  # Controller: Xbox
+  # Buttons: [1] B (wrist mod)  [2] X (actuator)  [4] LB (gripper open)  [5] RB (gripper close)
+  # Axes:    [0] left_stick_lr  [1] left_stick_ud  [3] right_stick_ud  [4] left_trigger  [5] right_trigger
+  # Modes:   default=base yaw+shoulder  wrist(buttons[1])=wrist roll+pitch  elbow=always on right stick
   controls:
-    modifier_button:       { type: int, default_value: 1, description: "Button index for wrist mode modifier.", read_only: true }             # Airbus: [button 1] center button
-    elbow_modifier_button: { type: int, default_value: 0, description: "Button index for elbow mode modifier.", read_only: true }             # Airbus: [button 2]
-    actuator_button:       { type: int, default_value: 3, description: "Button index for actuator trigger.", read_only: true }                # Airbus: [button 3] red button
-    gripper_open_button:   { type: int, default_value: 4, description: "Button index for gripper open.", read_only: true }                   # Airbus: [button 4] left 1
-    gripper_close_button:  { type: int, default_value: 5, description: "Button index for gripper close.", read_only: true }                  # Airbus: [button 5] left 2
-    base_yaw_axis:         { type: int, default_value: 0, description: "Axis index for base yaw / wrist roll.", read_only: true }            # Airbus: [axis 0] joystick_y
-    shoulder_pitch_axis:   { type: int, default_value: 1, description: "Axis index for shoulder / wrist pitch / elbow pitch.", read_only: true }  # Airbus: [axis 1] joystick_x
+    modifier_button:      { type: int, default_value: 1, description: "Button index for wrist mode modifier.", read_only: true }             # Xbox: B
+    actuator_button:      { type: int, default_value: 2, description: "Button index for actuator trigger.", read_only: true }               # Xbox: X
+    gripper_open_button:  { type: int, default_value: 4, description: "Button index for gripper open (full speed).", read_only: true }      # Xbox: LB
+    gripper_close_button: { type: int, default_value: 5, description: "Button index for gripper close (full speed).", read_only: true }     # Xbox: RB
+    base_yaw_axis:        { type: int, default_value: 0, description: "Axis index for base yaw / wrist roll.", read_only: true }            # Xbox: left_stick_lr
+    shoulder_pitch_axis:  { type: int, default_value: 1, description: "Axis index for shoulder pitch / wrist pitch.", read_only: true }     # Xbox: left_stick_ud
+    elbow_pitch_axis:     { type: int, default_value: 3, description: "Axis index for elbow pitch (always active).", read_only: true }      # Xbox: right_stick_ud
+    gripper_open_axis:    { type: int, default_value: 4, description: "Axis index for gripper open (analog fallback).", read_only: true }   # Xbox: left_trigger
+    gripper_close_axis:   { type: int, default_value: 5, description: "Axis index for gripper close (analog fallback).", read_only: true }  # Xbox: right_trigger

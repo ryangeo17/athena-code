@@ -1,6 +1,6 @@
 /**:
   ros__parameters:
-    joystick_type: "airbus"
+    joystick_type: "xbox"
 
     # can ids
     base_yaw_id: 5

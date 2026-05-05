@@ -28,22 +28,21 @@
 
     subsystems:
       arm:
-        # Controller: Airbus TCA Sidestick (joystick_type: airbus)
+        # Controller: Xbox (joystick_type: xbox)
 
-        # Slot → axis name → Joint-by-Joint use                          | Cylindrical use
-        # [0]  joystick_y     → base yaw (default) / wrist roll (wrist*) | unused
-        # [1]  joystick_x     → shoulder (default) / wrist pitch (wrist*) / elbow (elbow**) | vy / theta-dot*
-        # [2]  joystick_twist → unused                                    | yaw (rotate base)
-        # [3]  throttle_level → unused (joint-by-joint)                   | vz (height)
-        # [4]  hat_switch_y   → unused (dead slot)
-        # [5]  hat_switch_x   → unused (dead slot)
+        # Slot → axis name       → Joint-by-Joint use                              | Cylindrical use
+        # [0]  left_stick_lr    → base yaw (default) / wrist roll (wrist mod)      | wrist roll (zeroed)
+        # [1]  left_stick_ud    → shoulder pitch (default) / wrist pitch (wrist mod)| vy / theta-dot
+        # [2]  right_stick_lr   → unused                                            | yaw (rotate base)
+        # [3]  right_stick_ud   → elbow pitch (always, no modifier)                | vz (height)
+        # [4]  left_trigger     → gripper open analog fallback (after LB)          | claw open (analog)
+        # [5]  right_trigger    → gripper close analog fallback (after RB)         | claw close (analog)
 
-        # buttons[1] = front button  1  → axes[0]=wrist roll, axes[1]=wrist pitch
-        # buttons[0] = front button 2 → axes[1]=elbow pitch
-        # buttons[3] = red button       → actuator trigger
-        # buttons[4] = left 1           → gripper open
-        # buttons[5] = left 2           → gripper close
-        output_slots: [joystick_y, joystick_x, joystick_twist, throttle_level, hat_switch_y, hat_switch_x]
+        # B(buttons[1])  → wrist modifier (axes[0]=wrist roll, axes[1]=wrist pitch)
+        # X(buttons[2])  → actuator trigger
+        # LB(buttons[4]) → gripper open (full speed)
+        # RB(buttons[5]) → gripper close (full speed)
+        output_slots: [left_stick_lr, left_stick_ud, right_stick_lr, right_stick_ud, left_trigger, right_trigger]
       
       science:
         # Controller: Xbox (joystick_type: xbox)

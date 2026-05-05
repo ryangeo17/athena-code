@@ -249,8 +249,8 @@ controller_interface::return_type ManualArmCylindricalController::update(
     command_velocities_[2] = (*current_ref)->axes[params_.controls.vz_axis]*6*0.00635; // joystick_x -> vz
     command_velocities_[3] = (*current_ref)->axes[params_.controls.vy_axis] * static_cast<float>((*current_ref)->buttons[params_.controls.thetadot_modifier_button]);  // u/d left joystick & circle -> thetadot
     command_velocities_[4] = 0.0; // (*current_ref)->axes[params_.controls.wrist_roll_axis]; // l/r left joystick -> wrist roll
-    command_velocities_[5] = static_cast<double>((*current_ref)->buttons[params_.controls.open_claw_button]);  // left 1 button -> open claw
-    command_velocities_[6] = static_cast<double>((*current_ref)->buttons[params_.controls.close_claw_button]); // left 2 button -> close claw
+    command_velocities_[5] = (*current_ref)->axes[params_.controls.open_claw_axis];  // left trigger -> open claw
+    command_velocities_[6] = (*current_ref)->axes[params_.controls.close_claw_axis]; // right trigger -> close claw
   }
   else
   {
